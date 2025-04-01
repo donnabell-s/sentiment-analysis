@@ -1,0 +1,57 @@
+<!-- <div *ngIf="results" class="results-container">
+
+    <h1>Sentiment Analysis Results</h1>
+    
+    <div class="result-section">
+      <h3>Original Text</h3>
+      <p>{{ results.original_text }}</p>
+    </div>
+  
+    <div class="result-section">
+      <h3>Sentiment</h3>
+      <p [class]="results.sentiment.toLowerCase()">
+        {{ results.sentiment }}
+      </p>
+    </div>
+  
+    <div class="result-section">
+      <h3>Scores</h3>
+      <div class="scores-grid">
+        <div *ngFor="let score of getScoresArray()">
+          <h4>{{ score.name }}</h4>
+          <p>{{ score.value | number:'1.1-1' }}{{ score.unit }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div> -->
+
+<div class="container">
+    <div *ngIf="results" class="mt-5 mb-5">
+        <ng-container *ngIf="results.sentiment?.toLowerCase() === 'positive'">
+            <h1>Great vibes detected! Your sentiment is mostly <span class="positive">Positive</span>.</h1>
+        </ng-container>
+    
+        <ng-container *ngIf="results.sentiment?.toLowerCase() === 'negative'">
+            <h1>Your sentiment seems mostly <span class="negative">Negative</span>. Maybe take a breather?</h1>
+        </ng-container>
+    
+        <ng-container *ngIf="results.sentiment?.toLowerCase() === 'neutral'">
+            <h1>No big highs or lows—your mood reads mostly <span class="neutral">Neutral</span>.</h1>
+        </ng-container>
+    
+        <app-results-graphs></app-results-graphs>
+
+        <div class="d-flex justify-content-end">
+          <button (click)="newAnalysis()">New Analysis</button>
+        </div>
+        
+    </div>
+
+    <div *ngIf="!results">
+        <h1>No sentiment analysis results available.</h1>
+    </div>
+</div>

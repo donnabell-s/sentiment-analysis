@@ -1,0 +1,18 @@
+button{
+    background-color: white;
+    padding: 10px 20px 10px 20px;
+    border-color: 1F2937;
+    border-radius: 6px;
+}
+
+.negative{
+    color: #4385F5;
+}
+
+.neutral{
+    color: #34A853;
+}
+
+.positive{
+    color: #FCBC03;
+}

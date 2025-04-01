@@ -1,0 +1,19 @@
+textarea {
+    resize: none;
+    overflow: auto; /* Hide scrollbars if needed */
+    max-width: 900px;
+    height: 200px;
+    border-radius: 8px;
+    background-color: #F3F3F3;
+    border: none;
+    padding: 10px 13px 10px 13px;
+}
+
+button{
+    background-color: #66C78B;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    width: 140px;
+}

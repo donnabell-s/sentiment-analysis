@@ -1,0 +1,26 @@
+<div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  
+  <div *ngIf="results" class="charts-container">
+    
+    <div class="chart-row d-flex flex-row">
+      <div class="chart-wrapper d-flex flex-column ">
+        <h5 class="mb-5">Sentiment Distribution</h5>
+        <canvas baseChart
+          [type]="barChartType"
+          [data]="barChartData"
+          [options]="barChartOptions">
+        </canvas>
+      </div>
+  
+      <div class="chart-wrapper">
+        <h5>Sentiment Breakdown</h5>
+        <canvas baseChart
+          [type]="pieChartType"
+          [data]="pieChartData"
+          [options]="pieChartOptions">
+        </canvas>
+      </div>
+    </div>
+  </div>
