@@ -28,6 +28,13 @@ export class ResultsComponent {
 
     try {
       this.results = JSON.parse(storedResults);
+
+      // Check if processed_text is empty or null
+      if (!this.results.processed_text || this.results.processed_text.trim() === '') {
+        this.results = null; // Force the "no results" template to show
+        this.errorMessage = 'The analysis returned empty results. Please try with different text.';
+      }
+
     } catch (e) {
       console.error('Error parsing stored results:', e);
       this.errorMessage = 'Failed to load analysis results. Please try again.';
