@@ -1,3 +1,51 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: 'Rubik';
+    src: url('assets/Rubik-Regular.ttf');
+}
+
 html, body{
     color: #1F2937;
 }
+
+h1{
+    font-family: 'Poppins';
+}
+
+
+
+.icon.pos, .icon.neu, .icon.neg{
+    width: 50px;       /* Adjust size as needed */
+    height: 50px;      /* Equal to width for square */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain; /* or 'cover' for full area */
+}
+
+.icon.pos{
+    background-image: url(assets/pos.svg);
+}
+
+.icon.neu{
+    background-image: url(assets/neu.svg);
+}
+
+.icon.neg{
+    background-image: url(assets/neg.svg);
+}
+/* 
+.icon.result {
+    display: inline-block;
+    width: 43px;     
+    height: 43px;   
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain; 
+    vertical-align: middle; 
+    margin-bottom: 8px;
+  } */
+

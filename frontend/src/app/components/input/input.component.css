@@ -7,7 +7,12 @@ textarea {
     background-color: #F3F3F3;
     border: none;
     padding: 10px 13px 10px 13px;
+    font-size: 18px;
 }
+
+textarea:focus {
+    outline: 2px solid #1F2937;
+  }
 
 button{
     background-color: #66C78B;
@@ -16,4 +21,12 @@ button{
     border: none;
     border-radius: 6px;
     width: 140px;
+}
+
+h1{
+    font-size: 50px;
+}
+
+h6, button{
+    font-size: 17px;
 }
