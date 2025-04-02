@@ -94,14 +94,14 @@ export class ResultsGraphsComponent {
     datasets: [{
       data: [],
       backgroundColor: [
-        '#FCBC03',  // (Positive)
-        '#4385F5',  // (Negative)
-        '#34A853'   // (Neutral)
+        '#FCBC03', 
+        '#4385F5', 
+        '#34A853' 
       ],
       hoverBackgroundColor: [
-        '#EDB000',  // Darker teal
-        '#3778E8',  // Darker pink
-        '#2DA64D'   // Darker gray
+        '#EDB000',
+        '#3778E8',  
+        '#2DA64D'   
       ],
       borderWidth: 1
     }]
