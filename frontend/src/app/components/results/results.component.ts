@@ -29,10 +29,28 @@ export class ResultsComponent {
     try {
       this.results = JSON.parse(storedResults);
 
-      if (!this.results.processed_text || this.results.processed_text.trim() === '') {
+      console.log(this.results.scores.compound)
+
+      // if (!this.results.processed_text || this.results.processed_text.trim() === '') {
+      //   this.results = null; // Force the "no results" template to show
+      //   this.errorMessage = 'The analysis returned empty results. Please try with different text.';
+      // }
+
+      if (!this.results.scores || 
+        (this.results.scores.compound === 0 || 
+        this.results.scores.compound === undefined) &&
+        (this.results.scores.positive === 0 || 
+        this.results.scores.positive === undefined) &&
+        (this.results.scores.negative === 0 || 
+        this.results.scores.negative === undefined) &&
+        (this.results.scores.neutral === 0 || 
+        this.results.scores.neutral === undefined)) {
+        
         this.results = null; // Force the "no results" template to show
         this.errorMessage = 'The analysis returned empty results. Please try with different text.';
-      }
+    }
+
+    console.log(this.results)
 
     } catch (e) {
       console.error('Error parsing stored results:', e);

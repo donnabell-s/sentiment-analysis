@@ -18,15 +18,18 @@
             [options]="barChartOptions">
           </canvas>
           <div class="non-sentiment mb-3">
-            <h6 *ngIf="results.sentiment?.toLowerCase() !== 'positive'">
-              Positive: {{ results.scores.positive | number:'1.1-1' }}%
-            </h6>
-            <h6 *ngIf="results.sentiment?.toLowerCase() !== 'neutral'">
-              Neutral: {{ results.scores.neutral | number:'1.1-1' }}%
-            </h6>
-            <h6 *ngIf="results.sentiment?.toLowerCase() !== 'negative'">
-              Negative: {{ results.scores.negative | number:'1.1-1' }}%
-            </h6>
+            <div *ngIf="results.sentiment?.toLowerCase() !== 'positive'" class="d-flex flex-row w-50 justify-content-between">
+              <h6>Positive:</h6>
+              <h6 class="me-5">{{ results.scores.positive | number:'1.1-1' }}%</h6> 
+            </div>
+            <div *ngIf="results.sentiment?.toLowerCase() !== 'neutral'" class="d-flex flex-row w-50 justify-content-between">
+              <h6>Neutral:</h6>
+              <h6 class="me-5">{{ results.scores.neutral | number:'1.1-1' }}%</h6> 
+            </div>
+            <div *ngIf="results.sentiment?.toLowerCase() !== 'negative'" class="d-flex flex-row w-50 justify-content-between">
+              <h6>Negative:</h6>
+              <h6 class="me-5">{{ results.scores.negative | number:'1.1-1' }}%</h6> 
+            </div>
           </div>
         </div>
       </div>

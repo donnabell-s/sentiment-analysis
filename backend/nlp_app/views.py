@@ -4,39 +4,69 @@ from rest_framework import status
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
 import re
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
 import logging
+from .amplifiers import get_amplifier
+from .negations import NEGATE
 
 logger = logging.getLogger(__name__)
 
-nltk.download('punkt_tab')
-nltk.download('stopwords')
+nltk.download('punkt')
 nltk.download('vader_lexicon')
 
 sia = SentimentIntensityAnalyzer()
+stop_words = set(stopwords.words('english'))
 
-def clean_text(text):
-    """Clean and preprocess text for sentiment analysis."""
+def preprocess_text(text):
     if not text or not isinstance(text, str):
-        return ""
+        return {'tokens': [], 'cleaned_text': ''}
     
-    # Remove URLs, special chars, and numbers
     text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
-    text = re.sub(r'[^\w\s]', ' ', text)
     text = re.sub(r'\d+', '', text)
-    text = text.lower().strip()
     
-    # Tokenize and remove stopwords
-    try:
-        tokens = word_tokenize(text)
-        stop_words = set(stopwords.words('english'))
-        tokens = [word for word in tokens if word not in stop_words and len(word) > 1]
-        return ' '.join(tokens)
-    except Exception as e:
-        logger.error(f"Text cleaning failed: {e}")
-        return text  # Return original if cleaning fails
+    tokenizer = TweetTokenizer(preserve_case=False, reduce_len=True, strip_handles=True)
+    tokens = tokenizer.tokenize(text)
+    
+    filtered_tokens = [
+        token for token in tokens 
+        if token not in stop_words or token.lower() in NEGATE or get_amplifier(token.lower()) is not None
+    ]
 
+    # filtered_tokens = [
+    #     token for token in tokens 
+    #     if token not in stop_words or token.lower() in NEGATE
+    # ]
+    
+    return {
+        'tokens': filtered_tokens,
+        'cleaned_text': ' '.join(filtered_tokens)
+    }
+
+
+def analyze_with_amplifiers(tokens):
+    lexicon = sia.lexicon
+    
+    for i, token in enumerate(tokens[:-1]):
+        booster = get_amplifier(token.lower())
+        if booster:
+            target_word = tokens[i+1].lower()
+            if target_word in lexicon:
+                lexicon[target_word] *= (1 + booster)
+    
+    filtered_tokens = [
+        token for token in tokens
+        if not get_amplifier(token.lower())
+    ]
+    text = ' '.join(filtered_tokens)
+
+    print(text)
+    
+    scores = sia.polarity_scores(text)
+    
+    sia.lexicon = sia.make_lex_dict()
+    
+    return scores
 
 
 class AnalyzeSentimentView(APIView):
@@ -45,45 +75,34 @@ class AnalyzeSentimentView(APIView):
         
         if not text or not isinstance(text, str):
             return Response(
-                {'error': 'Valid text is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         try:
-            cleaned_text = clean_text(text)
-            sentiment_scores = sia.polarity_scores(cleaned_text)
+            processed = preprocess_text(text)
+            sentiment_scores = analyze_with_amplifiers(processed['tokens'])
+            # sentiment_scores = sia.polarity_scores(' '.join(processed['tokens']))
             
-            # Convert scores to percentage
             negative_percentage = sentiment_scores['neg'] * 100
             neutral_percentage = sentiment_scores['neu'] * 100
             positive_percentage = sentiment_scores['pos'] * 100
             
-
-            # Extract sentiment scores
-            negative_score = sentiment_scores['neg']
-            neutral_score = sentiment_scores['neu']
-            positive_score = sentiment_scores['pos']
-            compound = sentiment_scores['compound']
-
-            # Adjusted logic to consider neutral score
-            if neutral_score > positive_score and neutral_score > negative_score:
-                sentiment = 'Neutral'
-            elif compound >= 0.05:
+            if positive_percentage > max(negative_percentage, neutral_percentage):
                 sentiment = 'Positive'
-            elif compound <= -0.05:
+            elif negative_percentage > max(positive_percentage, neutral_percentage):
                 sentiment = 'Negative'
             else:
                 sentiment = 'Neutral'
             
             return Response({
                 'original_text': text,
-                'processed_text': cleaned_text,
+                'processed_text': processed['cleaned_text'],
                 'sentiment': sentiment,
                 'scores': {
                     'negative': negative_percentage,
                     'neutral': neutral_percentage,
                     'positive': positive_percentage,
-                    'compound': compound
+                    'compound': sentiment_scores['compound']
                 }
             })
 
@@ -98,5 +117,3 @@ class AnalyzeSentimentView(APIView):
         return Response({
             'message': 'Send a POST request with "text" parameter for analysis.',
         })
-
-
